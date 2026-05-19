@@ -4,21 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { 
-  RiUser3Line, 
   RiMailLine, 
-  RiImageLine, 
   RiLock2Line, 
   RiGoogleFill,
   RiAlertLine,
   RiCheckboxCircleLine
 } from "react-icons/ri";
 
-export default function Register() {
+export default function Login() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
-    photoUrl: "",
     password: ""
   });
 
@@ -35,25 +31,21 @@ export default function Register() {
     setTimeout(() => setNotification({ type: "", message: "" }), 4000);
   };
 
-  const handleRegister = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      if (formData.password.length < 6) {
-        throw new Error("Password must be at least 6 characters long.");
-      }
+      console.log("Logging in user:", formData);
 
-      console.log("Registering user:", formData);
-      
-      showNotification("success", "Registration successful! Redirecting to login...");
+      showNotification("success", "Login successful! Welcoming you back...");
       
       setTimeout(() => {
-        router.push("/login");
-      }, 2000);
+        router.push("/");
+      }, 1500);
 
     } catch (error) {
-      showNotification("error", error.message || "Registration failed. Try again.");
+      showNotification("error", error.message || "Invalid email or password.");
     } finally {
       setLoading(false);
     }
@@ -76,7 +68,6 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] flex items-center justify-center pt-24 pb-16 transition-colors duration-300 px-4">
       
-      {/* Toast Notification */}
       {notification.message && (
         <div className={`fixed top-24 right-4 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl border shadow-2xl backdrop-blur-md animate-bounce ${
           notification.type === "success" 
@@ -92,33 +83,15 @@ export default function Register() {
         
         <div className="text-center mb-8">
           <h1 className="text-2xl md:text-3xl font-extrabold text-gray-950 dark:text-white tracking-tight">
-            Create an <span className="text-[#f97316]">Account</span>
+            Welcome <span className="text-[#f97316]">Back</span>
           </h1>
           <p className="text-sm text-gray-500 dark:text-white/40 mt-1">
-            Join DriveFleet today and explore premium cars.
+            Log in to manage your bookings and explore fleets.
           </p>
         </div>
 
-        <form onSubmit={handleRegister} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4">
           
-          <div>
-            <label className="text-xs font-semibold text-gray-600 dark:text-white/70 uppercase tracking-wider block mb-1.5">
-              Full Name
-            </label>
-            <div className="relative">
-              <RiUser3Line className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="John Doe"
-                required
-                className="w-full bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.08] rounded-xl pl-11 pr-4 py-3 text-sm text-gray-900 dark:text-white focus:border-[#f97316] dark:focus:border-[#f97316] outline-none transition-colors"
-              />
-            </div>
-          </div>
-
           <div>
             <label className="text-xs font-semibold text-gray-600 dark:text-white/70 uppercase tracking-wider block mb-1.5">
               Email Address
@@ -138,27 +111,14 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-gray-600 dark:text-white/70 uppercase tracking-wider block mb-1.5">
-              Photo URL
-            </label>
-            <div className="relative">
-              <RiImageLine className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
-              <input
-                type="url"
-                name="photoUrl"
-                value={formData.photoUrl}
-                onChange={handleChange}
-                placeholder="https://example.com/photo.jpg"
-                required
-                className="w-full bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.08] rounded-xl pl-11 pr-4 py-3 text-sm text-gray-900 dark:text-white focus:border-[#f97316] dark:focus:border-[#f97316] outline-none transition-colors"
-              />
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="text-xs font-semibold text-gray-600 dark:text-white/70 uppercase tracking-wider block">
+                Password
+              </label>
+              <Link href="#" className="text-xs text-gray-400 hover:text-[#f97316] transition-colors">
+                Forgot?
+              </Link>
             </div>
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold text-gray-600 dark:text-white/70 uppercase tracking-wider block mb-1.5">
-              Password
-            </label>
             <div className="relative">
               <RiLock2Line className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
               <input
@@ -178,7 +138,7 @@ export default function Register() {
             disabled={loading}
             className="w-full bg-[#f97316] hover:bg-[#ea580c] disabled:bg-gray-400 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-[#f97316]/10 text-sm mt-2"
           >
-            {loading ? "Creating Account..." : "Register"}
+            {loading ? "Signing In..." : "Login"}
           </button>
         </form>
 
@@ -198,13 +158,13 @@ export default function Register() {
           className="w-full flex items-center justify-center gap-2.5 bg-gray-50 dark:bg-white/[0.02] hover:bg-gray-100 dark:hover:bg-white/[0.06] text-gray-900 dark:text-white border border-gray-200 dark:border-white/[0.08] py-3 rounded-xl font-medium text-sm transition-colors"
         >
           <RiGoogleFill className="text-lg text-red-500" />
-          Sign up with Google
+          Sign in with Google
         </button>
 
         <p className="text-center text-xs text-gray-500 dark:text-white/40 mt-6">
-          Already have an account?{" "}
-          <Link href="/login" className="text-[#f97316] font-semibold hover:underline">
-            Login
+          Don't have an account yet?{" "}
+          <Link href="/register" className="text-[#f97316] font-semibold hover:underline">
+            Register
           </Link>
         </p>
 
