@@ -247,6 +247,7 @@ import { authClient } from "@/app/lib/auth-client";
 export default function AddCar() {
 
   const { data: session } = authClient.useSession();
+  const user = session?.user;
 
   const [formData, setFormData] = useState({
     name: "",
@@ -273,6 +274,7 @@ export default function AddCar() {
     const formEl = e.currentTarget;
     const rawData = Object.fromEntries(new FormData(formEl).entries());
     const carData = {
+      owner_id: user?.id,
       name: rawData.name,
       price: Number(rawData.price),
       type: rawData.type,
