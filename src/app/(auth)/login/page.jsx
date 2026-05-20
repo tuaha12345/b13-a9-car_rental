@@ -41,9 +41,19 @@ const LoginPage = () => {
   };
 
   const handleGoogleSignin = async () => {
-    await authClient.signIn.social({
-      provider: "google",
-    });
+                const { data, error } = await authClient.signIn.social({
+                    provider: "google",
+                    callbackURL: "/",
+                });
+                if (error) {
+                    console.error(error);
+                    // toast.error(error.message)
+                    alert("Google Sign-In failed. Please try again.");
+                } else {
+                    console.log(data);
+                    // toast.success("SignIn successful")
+                    alert("Google Sign-In successful! Redirecting...");
+                }
   };
 
   return (
