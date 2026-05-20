@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Banner from "../component/Banner";
 import Card from "../component/Card";
+import WhyChooseUs from "../component/WhyChooseUs";
+import HowItWorks from "../component/HowItWorks";
 
 export default async function Home() {
 
@@ -18,6 +20,8 @@ export default async function Home() {
         <Card key={car._id} car={car} />
       ))}
     </div>
+          <WhyChooseUs />
+      <HowItWorks />
     </>
 
   );
