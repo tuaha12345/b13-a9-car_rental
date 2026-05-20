@@ -239,7 +239,7 @@ export default function AppNavbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ইউজার লগইন থাকলে সব লিঙ্ক দেখাবে, না থাকলে শুধু বেসিক লিঙ্ক দেখাবে
+
   const baseLinks = [
     { href: "/", label: "Home" },
     { href: "/cars", label: "Explore Cars" },
@@ -308,7 +308,7 @@ export default function AppNavbar() {
 
           <div className="flex items-center gap-4">
             {!user ? (
-              // ইউজার লগইন না থাকলে এই বাটনগুলো দেখাবে
+            
               <div className="flex items-center gap-4">
                 <Link
                   href="/login"
@@ -324,7 +324,6 @@ export default function AppNavbar() {
                 </Link>
               </div>
             ) : (
-              // ইউজার লগইন থাকলে প্রোফাইল ড্রপডাউন মেনু দেখাবে
               <div className="relative">
                 <button 
                   onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -392,7 +391,7 @@ export default function AppNavbar() {
         </div>
       </div>
 
-      {/* মোবাইল মেনু রেসপন্সিভনেস */}
+
       {mobileMenuOpen && (
         <div className="sm:hidden fixed inset-x-0 top-16 bg-white dark:bg-[#0d0d0d]/95 backdrop-blur-xl border-b border-gray-200 dark:border-white/[0.06] pt-4 pb-6 px-4 flex flex-col gap-1 shadow-lg">
           {navLinks.map((link) => (

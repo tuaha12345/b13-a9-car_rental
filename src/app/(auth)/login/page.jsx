@@ -15,11 +15,16 @@ import {
   TextField
 } from "@heroui/react";
 import { authClient } from "@/app/lib/auth-client";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import Link from "next/link";
 import { RiMailLine, RiLock2Line } from "react-icons/ri";
+import { useRouter } from "next/navigation";
+
+
 
 const LoginPage = () => {
+  const router = useRouter();
+  
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -32,7 +37,8 @@ const LoginPage = () => {
     });
 
     if (data) {
-      redirect('/');
+      // redirect('/');
+      router.push("/");
     }
 
     if (error) {
