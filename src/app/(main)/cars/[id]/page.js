@@ -1,221 +1,273 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   RiGasStationLine, 
   RiSteeringLine, 
   RiUser3Line, 
-  RiCalendarLine, 
-  RiShieldCheckLine,
   RiArrowLeftLine,
-  RiCheckboxCircleLine
+  RiMapPinLine
 } from "react-icons/ri";
+import { useSession } from "@/app/lib/auth-client";
 
-export default function CarDetails() {
-  const [days, setDays] = useState(1);
-  const pricePerDay = 4500;
+export default function CarDetailsPage() {
+  const { id } = useParams();
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [car, setCar] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [dateError, setDateError] = useState("");
+  const [bookingStatus, setBookingStatus] = useState("");
 
-  const car = {
-    name: "Toyota Premio F EX Package 2020",
-    brand: "Toyota",
-    category: "Sedan",
-    fuelType: "Octane",
-    transmission: "Automatic",
-    seats: 5,
-    engine: "1500 cc",
-    color: "Pearl White",
-    pricePerDay: pricePerDay,
-    isAvailable: true,
-    description: "Toyota Premio is one of the most popular and comfortable premium sedans in Bangladesh. Perfect for family trips, corporate movements, and long drives. It offers a smooth ride with exceptional fuel efficiency and premium interior comfort.",
-    features: [
-      "Air Conditioner & Heater",
-      "Anti-Lock Braking System (ABS)",
-      "Multimedia Touch Screen & Bluetooth",
-      "Back Camera & Parking Sensors",
-      "Dual Airbags",
-      "Push Start Button"
-    ],
-    images: [
-      "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&q=80&w=800",
-      "https://images.unsplash.com/photo-1619682817481-e994891cd1f5?auto=format&fit=crop&q=80&w=400",
-      "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=400"
-    ]
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
+
+  useEffect(() => {
+    if (!id) return;
+    fetch(`${API_URL}/cars/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Car not found");
+        return res.json();
+      })
+      .then((data) => {
+        setCar(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [id, API_URL]);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      if (end < start) {
+        setDateError("End date cannot be earlier than start date");
+      } else {
+        setDateError("");
+      }
+    } else {
+      setDateError("");
+    }
+  }, [startDate, endDate]);
+
+  const getDaysCount = () => {
+    if (!startDate || !endDate) return 0;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (end < start) return 0;
+    const timeDiff = end - start;
+    const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1;
+    return days > 0 ? days : 0;
   };
 
-  const [activeImage, setActiveImage] = useState(car.images[0]);
+  const daysCount = getDaysCount();
+  const totalPrice = (car?.price || 0) * daysCount;
+  const isBookingDisabled = !car?.availability || !startDate || !endDate || dateError !== "" || daysCount === 0 || bookingStatus === "processing";
+
+  const handleBooking = async () => {
+    if (!session?.user) {
+      alert("Please login to book a car");
+      router.push("/login");
+      return;
+    }
+
+    setBookingStatus("processing");
+    try {
+      const response = await fetch(`${API_URL}/bookings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          carId: car._id,
+          carName: car.name,
+          carImage: car.image,
+          pricePerDay: car.price,
+          totalPrice: totalPrice,
+          startDate: startDate,
+          endDate: endDate,
+          days: daysCount,
+          userId: session.user.id,
+          userName: session.user.name || session.user.email,
+          userEmail: session.user.email,
+        }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("Booking successful!");
+        router.push("/my-bookings");
+      } else {
+        alert(result.message || "Booking failed");
+        setBookingStatus("");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong");
+      setBookingStatus("");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] flex items-center justify-center">
+        <div className="text-gray-600 dark:text-white/60">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error || !car) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] flex flex-col items-center justify-center gap-4">
+        <div className="text-red-500">{error || "Car not found"}</div>
+        <Link href="/cars" className="text-[#f97316] hover:underline">← Back to cars</Link>
+      </div>
+    );
+  }
+
+  const fallbackImage = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800";
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] pt-24 pb-16 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        
-        <Link 
-          href="/cars" 
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-white/60 hover:text-[#f97316] dark:hover:text-[#f97316] transition-colors mb-8 group"
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] pt-24 pb-16 px-4">
+      <div className="max-w-6xl mx-auto">
+        <Link
+          href="/cars"
+          className="inline-flex items-center gap-2 text-gray-600 dark:text-white/60 hover:text-[#f97316] mb-6 transition"
         >
-          <RiArrowLeftLine className="text-lg group-hover:-translate-x-0.5 transition-transform" />
-          Back to Explore
+          <RiArrowLeftLine /> Back to explore
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          
-          <div className="lg:col-span-2 flex flex-col gap-6">
-            
-            <div className="flex flex-col gap-4">
-              <div className="w-full h-[300px] md:h-[450px] bg-white dark:bg-[#121212] rounded-2xl overflow-hidden border border-gray-100 dark:border-white/[0.06]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={activeImage} 
-                  alt={car.name} 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              
-              <div className="flex gap-4">
-                {car.images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImage(img)}
-                    className={`w-24 h-16 md:w-32 md:h-20 rounded-xl overflow-hidden border-2 transition-all ${
-                      activeImage === img ? "border-[#f97316]" : "border-transparent opacity-60 hover:opacity-100"
-                    }`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-white dark:bg-[#121212] rounded-2xl overflow-hidden border border-gray-100 dark:border-white/[0.06]">
+            <div className="relative h-80 md:h-96 w-full">
+              <Image
+                src={car.image || fallbackImage}
+                alt={car.name || "Car"}
+                fill
+                className="object-cover"
+                priority
+              />
             </div>
+          </div>
 
-            <div className="bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/[0.06] rounded-2xl p-6 md:p-8 flex flex-col gap-6">
+          <div className="bg-white dark:bg-[#121212] rounded-2xl border border-gray-100 dark:border-white/[0.06] p-6 md:p-8">
+            <div className="flex justify-between items-start">
               <div>
-                <span className="text-xs font-semibold text-[#f97316] uppercase tracking-wider bg-[#f97316]/10 px-3 py-1 rounded-full">
-                  {car.brand}
+                <span className="text-xs font-semibold text-[#f97316] bg-[#f97316]/10 px-3 py-1 rounded-full">
+                  {car.type || "Standard"}
                 </span>
-                <h1 className="text-2xl md:text-4xl font-extrabold text-gray-950 dark:text-white mt-3">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-950 dark:text-white mt-2">
                   {car.name}
                 </h1>
               </div>
+              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                car.availability 
+                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" 
+                  : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+              }`}>
+                {car.availability ? "Available" : "Not Available"}
+              </span>
+            </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 border-y border-gray-100 dark:border-white/[0.06]">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/[0.02] flex items-center justify-center text-gray-500 dark:text-white/60">
-                    <RiGasStationLine className="text-xl" />
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-400 block">Fuel Type</span>
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{car.fuelType}</span>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/[0.02] flex items-center justify-center text-gray-500 dark:text-white/60">
-                    <RiSteeringLine className="text-xl" />
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-400 block">Transmission</span>
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{car.transmission}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/[0.02] flex items-center justify-center text-gray-500 dark:text-white/60">
-                    <RiUser3Line className="text-xl" />
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-400 block">Seats</span>
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{car.seats} Seats</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/[0.02] flex items-center justify-center text-gray-500 dark:text-white/60">
-                    <RiCalendarLine className="text-xl" />
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-400 block">Engine</span>
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{car.engine}</span>
-                  </div>
-                </div>
+            <div className="grid grid-cols-3 gap-3 my-6 py-4 border-y border-gray-100 dark:border-white/[0.06]">
+              <div className="text-center">
+                <RiGasStationLine className="mx-auto text-gray-500 dark:text-white/50 text-xl mb-1" />
+                <p className="text-xs text-gray-400">Fuel</p>
+                <p className="text-sm font-semibold">{car.fuelType || "Petrol"}</p>
               </div>
-
-              <div>
-                <h3 className="text-lg font-bold text-gray-950 dark:text-white mb-3">Description</h3>
-                <p className="text-sm text-gray-600 dark:text-white/60 leading-relaxed">
-                  {car.description}
-                </p>
+              <div className="text-center">
+                <RiSteeringLine className="mx-auto text-gray-500 dark:text-white/50 text-xl mb-1" />
+                <p className="text-xs text-gray-400">Transmission</p>
+                <p className="text-sm font-semibold">{car.transmission || "Manual"}</p>
               </div>
-
-              <div>
-                <h3 className="text-lg font-bold text-gray-950 dark:text-white mb-4">Features & Amenities</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {car.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2.5 text-sm text-gray-700 dark:text-white/80">
-                      <RiCheckboxCircleLine className="text-[#f97316] text-lg flex-shrink-0" />
-                      {feature}
-                    </div>
-                  ))}
-                </div>
+              <div className="text-center">
+                <RiUser3Line className="mx-auto text-gray-500 dark:text-white/50 text-xl mb-1" />
+                <p className="text-xs text-gray-400">Seats</p>
+                <p className="text-sm font-semibold">{car.seats || 4}</p>
               </div>
             </div>
 
-          </div>
+            <div className="flex items-center gap-2 text-gray-600 dark:text-white/70 text-sm mb-4">
+              <RiMapPinLine className="text-[#f97316]" />
+              {car.location || "Dhaka"}
+            </div>
 
-          <div className="lg:col-span-1 sticky top-24 flex flex-col gap-4">
-            <div className="bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/[0.06] rounded-2xl p-6 shadow-xl shadow-gray-100 dark:shadow-none">
-              <h3 className="text-lg font-bold text-gray-950 dark:text-white mb-4">Booking Summary</h3>
-              
-              <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-white/[0.06]">
-                <span className="text-sm text-gray-500 dark:text-white/60">Price / Day</span>
-                <span className="text-base font-bold text-gray-950 dark:text-white">৳{car.pricePerDay.toLocaleString('en-BD')}</span>
+            <p className="text-gray-600 dark:text-white/70 text-sm leading-relaxed mb-6">
+              {car.description || "No description provided."}
+            </p>
+
+            {car.owner && (
+              <div className="text-xs text-gray-400 mb-6">
+                Owner: <span className="text-gray-700 dark:text-white/80">{car.owner}</span>
               </div>
+            )}
 
-              <div className="py-4 border-b border-gray-100 dark:border-white/[0.06]">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-2">
-                  Select Total Days
-                </label>
-                <div className="flex items-center border border-gray-200 dark:border-white/[0.08] rounded-xl overflow-hidden w-full max-w-[140px] bg-gray-50 dark:bg-white/[0.02]">
-                  <button 
-                    onClick={() => setDays(Math.max(1, days - 1))}
-                    className="w-10 h-10 text-gray-600 dark:text-white hover:bg-gray-100 dark:hover:bg-white/[0.05] transition-colors font-bold text-lg"
-                  >
-                    -
-                  </button>
-                  <span className="flex-1 text-center font-semibold text-sm text-gray-900 dark:text-white">
-                    {days}
-                  </span>
-                  <button 
-                    onClick={() => setDays(days + 1)}
-                    className="w-10 h-10 text-gray-600 dark:text-white hover:bg-gray-100 dark:hover:bg-white/[0.05] transition-colors font-bold text-lg"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center py-4 mb-6">
+            <div className="border-t border-gray-100 dark:border-white/[0.06] pt-6">
+              <div className="flex justify-between items-start mb-4 gap-4 flex-wrap">
                 <div>
-                  <span className="text-sm font-bold text-gray-950 dark:text-white block">Total Payable</span>
-                  <span className="text-xs text-gray-400">VAT & Taxes included</span>
+                  <span className="text-sm text-gray-400">Price per day</span>
+                  <p className="text-2xl font-bold text-gray-950 dark:text-white">
+                    ৳{car.price?.toLocaleString("en-BD") || 0}
+                  </p>
                 </div>
-                <span className="text-2xl font-extrabold text-[#f97316]">
-                  ৳{(car.pricePerDay * days).toLocaleString('en-BD')}
+                <div className="flex gap-3">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Start Date</label>
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="px-3 py-2 rounded-lg border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.02] text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">End Date</label>
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="px-3 py-2 rounded-lg border border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-white/[0.02] text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+              {dateError && (
+                <p className="text-red-500 text-xs mt-1 mb-2">{dateError}</p>
+              )}
+              {startDate && endDate && !dateError && daysCount > 0 && (
+                <div className="text-sm text-gray-600 dark:text-white/70 mb-2">
+                  Total days: {daysCount}
+                </div>
+              )}
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-sm text-gray-400">Total payable</span>
+                <span className="text-xl font-bold text-[#f97316]">
+                  ৳{totalPrice.toLocaleString("en-BD")}
                 </span>
               </div>
-
-              <button className="w-full bg-[#f97316] hover:bg-[#ea580c] text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-[#f97316]/10 mb-4">
-                Book This Car
+              <button
+                onClick={handleBooking}
+                disabled={isBookingDisabled}
+                className={`w-full py-3 rounded-xl font-semibold transition ${
+                  !isBookingDisabled
+                    ? "bg-[#f97316] hover:bg-[#ea580c] text-white"
+                    : "bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                {bookingStatus === "processing" ? "Processing..." : 
+                  !car.availability ? "Not Available" : 
+                  !startDate || !endDate ? "Select Dates" : 
+                  dateError ? "Invalid Dates" : "Book Now"}
               </button>
-
-              <div className="flex items-center justify-center gap-2 text-xs text-gray-400 dark:text-white/40">
-                <RiShieldCheckLine className="text-base text-green-500" />
-                Secure Checkout & Instant Confirmation
-              </div>
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
   );

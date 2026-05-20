@@ -1,7 +1,8 @@
 import Card from "@/app/component/Card";
 
 export default async function ExploreCars() {
-  let data = await fetch('http://localhost:9000/cars', { cache: 'no-store' });
+  let data = await fetch('http://localhost:9
+    000/cars', { cache: 'no-store' });
   let cars = await data.json();
 
   return (

@@ -1,5 +1,5 @@
-const dns=require('dns');
-dns.setServers(['1.1.1.1','8.8.8.8']);
+// const dns=require('dns');
+// dns.setServers(['1.1.1.1','8.8.8.8']);
 
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
@@ -19,6 +19,7 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENTID,
       clientSecret: process.env.GOOGLE_SECRET,
+      prompt: "select_account", 
     },
   },
 });
