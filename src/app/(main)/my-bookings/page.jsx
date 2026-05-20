@@ -117,7 +117,7 @@ export default function MyBookingsPage() {
             </div>
             <p className="text-gray-500 dark:text-white/50 mb-4">No bookings yet. Start your first adventure!</p>
             <Link
-              href="/cars"
+              href="/explore_cars"
               className="inline-block px-6 py-2.5 bg-[#f97316] hover:bg-[#ea580c] text-white rounded-xl transition-all shadow-lg shadow-[#f97316]/20 font-medium"
             >
               Explore Cars

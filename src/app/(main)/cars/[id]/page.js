@@ -9,7 +9,8 @@ import {
   RiSteeringLine, 
   RiUser3Line, 
   RiArrowLeftLine,
-  RiMapPinLine
+  RiMapPinLine,
+  RiCloseLine
 } from "react-icons/ri";
 import { useSession } from "@/app/lib/auth-client";
 
@@ -24,6 +25,7 @@ export default function CarDetailsPage() {
   const [endDate, setEndDate] = useState("");
   const [dateError, setDateError] = useState("");
   const [bookingStatus, setBookingStatus] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
 
@@ -72,7 +74,7 @@ export default function CarDetailsPage() {
   const totalPrice = (car?.price || 0) * daysCount;
   const isBookingDisabled = !car?.availability || !startDate || !endDate || dateError !== "" || daysCount === 0 || bookingStatus === "processing";
 
-  const handleBooking = async () => {
+  const handleBookingConfirm = async () => {
     if (!session?.user) {
       alert("Please login to book a car");
       router.push("/login");
@@ -80,6 +82,7 @@ export default function CarDetailsPage() {
     }
 
     setBookingStatus("processing");
+    setShowModal(false);
     try {
       const response = await fetch(`${API_URL}/bookings`, {
         method: "POST",
@@ -112,6 +115,15 @@ export default function CarDetailsPage() {
       alert("Something went wrong");
       setBookingStatus("");
     }
+  };
+
+  const openModal = () => {
+    if (!session?.user) {
+      alert("Please login to book a car");
+      router.push("/login");
+      return;
+    }
+    setShowModal(true);
   };
 
   if (loading) {
@@ -252,7 +264,7 @@ export default function CarDetailsPage() {
                 </span>
               </div>
               <button
-                onClick={handleBooking}
+                onClick={openModal}
                 disabled={isBookingDisabled}
                 className={`w-full py-3 rounded-xl font-semibold transition ${
                   !isBookingDisabled
@@ -269,6 +281,47 @@ export default function CarDetailsPage() {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#121212] rounded-2xl max-w-md w-full mx-4 p-6 shadow-2xl border border-gray-100 dark:border-white/[0.06]">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Confirm Booking</h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-white/70"
+              >
+                <RiCloseLine className="text-2xl" />
+              </button>
+            </div>
+            <div className="space-y-3 text-sm">
+              <p className="text-gray-600 dark:text-white/70">
+                <span className="font-semibold">Car:</span> {car.name}
+              </p>
+              <p className="text-gray-600 dark:text-white/70">
+                <span className="font-semibold">Dates:</span> {startDate} → {endDate} ({daysCount} days)
+              </p>
+              <p className="text-gray-600 dark:text-white/70">
+                <span className="font-semibold">Total Amount:</span> ৳{totalPrice.toLocaleString("en-BD")}
+              </p>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowModal(false)}
+                className="flex-1 py-2 rounded-xl border border-gray-200 dark:border-white/[0.08] text-gray-700 dark:text-white/70 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBookingConfirm}
+                className="flex-1 py-2 rounded-xl bg-[#f97316] text-white font-semibold hover:bg-[#ea580c] transition"
+              >
+                Confirm Booking
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
