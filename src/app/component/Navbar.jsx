@@ -42,7 +42,7 @@ export default function AppNavbar() {
 
   const baseLinks = [
     { href: "/", label: "Home" },
-    { href: "/cars", label: "Explore Cars" },
+    { href: "/explore_cars", label: "Explore Cars" },
   ];
 
   const protectedLinks = user ? [
