@@ -3,7 +3,7 @@ import Link from "next/link";
 import Banner from "../component/Banner";
 import Card from "../component/Card";
 
-export default function Home() {
+export default async function Home() {
   const carsData = [
     {
       id: "1",
@@ -67,6 +67,9 @@ export default function Home() {
     }
   ];
 
+  let data = await fetch('http://localhost:7000/cars');
+  let cars = await data.json();
+
   return (
     <>
     <Banner></Banner>
@@ -76,8 +79,8 @@ export default function Home() {
       </h1>
     </div> */}
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {carsData.map((car) => (
-        <Card key={car.id} car={car} />
+      {cars.map((car) => (
+        <Card key={car._id} car={car} />
       ))}
     </div>
     </>
