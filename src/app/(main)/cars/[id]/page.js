@@ -26,6 +26,8 @@ export default function CarDetailsPage() {
   const [dateError, setDateError] = useState("");
   const [bookingStatus, setBookingStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [driverNeeded, setDriverNeeded] = useState("No");
+  const [specialNote, setSpecialNote] = useState("");
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
 
@@ -99,6 +101,8 @@ export default function CarDetailsPage() {
           userId: session.user.id,
           userName: session.user.name || session.user.email,
           userEmail: session.user.email,
+          driverNeeded: driverNeeded,
+          specialNote: specialNote,
         }),
       });
 
@@ -149,7 +153,7 @@ export default function CarDetailsPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] pt-24 pb-16 px-4">
       <div className="max-w-6xl mx-auto">
         <Link
-          href="/cars"
+          href="/"
           className="inline-flex items-center gap-2 text-gray-600 dark:text-white/60 hover:text-[#f97316] mb-6 transition"
         >
           <RiArrowLeftLine /> Back to explore
@@ -283,7 +287,7 @@ export default function CarDetailsPage() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white dark:bg-[#121212] rounded-2xl max-w-md w-full mx-4 p-6 shadow-2xl border border-gray-100 dark:border-white/[0.06]">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">Confirm Booking</h3>
@@ -304,6 +308,31 @@ export default function CarDetailsPage() {
               <p className="text-gray-600 dark:text-white/70">
                 <span className="font-semibold">Total Amount:</span> ৳{totalPrice.toLocaleString("en-BD")}
               </p>
+              
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 dark:text-white/70 mb-1">Driver Needed</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-1 cursor-pointer">
+                    <input type="radio" name="driverNeeded" value="Yes" checked={driverNeeded === "Yes"} onChange={() => setDriverNeeded("Yes")} className="accent-[#f97316]" />
+                    <span className="text-sm">Yes</span>
+                  </label>
+                  <label className="flex items-center gap-1 cursor-pointer">
+                    <input type="radio" name="driverNeeded" value="No" checked={driverNeeded === "No"} onChange={() => setDriverNeeded("No")} className="accent-[#f97316]" />
+                    <span className="text-sm">No</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 dark:text-white/70 mb-1">Special Note (optional)</label>
+                <textarea
+                  rows="2"
+                  value={specialNote}
+                  onChange={(e) => setSpecialNote(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/[0.08] text-sm resize-none"
+                  placeholder="Any special requests or notes..."
+                />
+              </div>
             </div>
             <div className="flex gap-3 mt-6">
               <button
@@ -316,7 +345,7 @@ export default function CarDetailsPage() {
                 onClick={handleBookingConfirm}
                 className="flex-1 py-2 rounded-xl bg-[#f97316] text-white font-semibold hover:bg-[#ea580c] transition"
               >
-                Confirm Booking
+                Book Now
               </button>
             </div>
           </div>

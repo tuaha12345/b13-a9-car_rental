@@ -70,6 +70,8 @@ export default function MyBookingsPage() {
     });
   };
 
+  const confirmedCount = bookings.filter(b => b.status === "confirmed").length;
+
   if (sessionLoading || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#0a0a0a] dark:to-[#0f0f0f] flex items-center justify-center">
@@ -104,9 +106,16 @@ export default function MyBookingsPage() {
           >
             <RiArrowLeftLine className="text-sm" /> Dashboard
           </Link>
-          <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
-            My Bookings
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
+              My Bookings
+            </h1>
+            {confirmedCount > 0 && (
+              <span className="px-3 py-1 text-sm font-bold bg-[#f97316] text-white rounded-full shadow-md">
+                {confirmedCount} confirmed
+              </span>
+            )}
+          </div>
           <div className="w-24"></div>
         </div>
 
@@ -211,6 +220,17 @@ export default function MyBookingsPage() {
                           </div>
                         </div>
                       </div>
+
+                      {booking.driverNeeded && (
+                        <div className="mt-3 text-xs text-gray-500 dark:text-white/50 flex items-center gap-2">
+                          <span className="font-semibold">Driver needed:</span> {booking.driverNeeded}
+                        </div>
+                      )}
+                      {booking.specialNote && (
+                        <div className="mt-1 text-xs text-gray-500 dark:text-white/50">
+                          <span className="font-semibold">Note:</span> {booking.specialNote}
+                        </div>
+                      )}
                     </div>
 
                     {booking.status === "confirmed" && (
