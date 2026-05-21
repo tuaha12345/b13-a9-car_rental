@@ -112,7 +112,7 @@ export default function Footer() {
             &copy; {currentYear} DriveFleet. All rights reserved.
           </p>
           <p className="text-xs text-gray-400 dark:text-white/20 text-center sm:text-right">
-            Made with ❤️ in Bangladesh
+            Made in Bangladesh
           </p>
         </div>
       </div>

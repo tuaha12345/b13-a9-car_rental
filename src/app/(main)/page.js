@@ -4,11 +4,19 @@ import Banner from "../component/Banner";
 import Card from "../component/Card";
 import WhyChooseUs from "../component/WhyChooseUs";
 import HowItWorks from "../component/HowItWorks";
+import { auth } from "@/app/lib/auth";
+import { headers } from "next/headers";
 
 export default async function Home() {
 
+  //   const {token} = await auth.api.getToken({
+  //   headers: await headers()
+  // });
+  //  console.log(token);
 
-  let data = await fetch('http://localhost:9000/cars');
+  // let data = await fetch('http://localhost:9000/cars',{headers:{authorization:`Bearer ${token}`}});
+   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
+  let data = await fetch(`${API_URL}/cars`);
   let cars = await data.json();
 
   return (

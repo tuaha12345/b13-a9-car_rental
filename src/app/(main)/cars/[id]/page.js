@@ -86,9 +86,13 @@ export default function CarDetailsPage() {
     setBookingStatus("processing");
     setShowModal(false);
     try {
+      const {data:tokenData} = await authClient.token();
       const response = await fetch(`${API_URL}/bookings`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${tokenData?.token}`
+        },
         body: JSON.stringify({
           carId: car._id,
           carName: car.name,

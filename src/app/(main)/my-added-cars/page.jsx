@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+
 import { 
   RiCarLine, 
   RiAddLine, 
@@ -16,6 +17,7 @@ import {
   RiMapPinLine
 } from "react-icons/ri";
 import { useSession } from "@/app/lib/auth-client";
+import { authClient } from "@/app/lib/auth-client";
 
 export default function MyAddedCarsPage() {
   const { data: session, isPending: sessionLoading } = useSession();
@@ -41,7 +43,12 @@ export default function MyAddedCarsPage() {
 
   const fetchUserCars = async () => {
     try {
-      const res = await fetch(`${API_URL}/cars/user/${session.user.id}`);
+      const {data:tokenData} = await authClient.token();
+      const res = await fetch(`${API_URL}/cars/user/${session.user.id}`, {
+        headers: {
+          authorization: `Bearer ${tokenData?.token}`
+        }
+      });
       if (!res.ok) throw new Error("Failed to fetch your cars");
       const data = await res.json();
       setCars(data);
@@ -56,7 +63,13 @@ export default function MyAddedCarsPage() {
     if (!confirm("Are you sure you want to delete this car?")) return;
     setDeletingId(carId);
     try {
-      const res = await fetch(`${API_URL}/cars/${carId}`, { method: "DELETE" });
+      const {data:tokenData} = await authClient.token();
+      const res = await fetch(`${API_URL}/cars/${carId}`, {
+        method: "DELETE",
+        headers: {
+          authorization: `Bearer ${tokenData?.token}`
+        }
+      });
       if (!res.ok) throw new Error("Delete failed");
       setCars(prev => prev.filter(c => c._id !== carId));
       alert("Car deleted successfully");
@@ -90,9 +103,13 @@ export default function MyAddedCarsPage() {
     e.preventDefault();
     setUpdating(true);
     try {
+      const {data:tokenData} = await authClient.token();
       const res = await fetch(`${API_URL}/cars/${editingCar._id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${tokenData?.token}`
+        },
         body: JSON.stringify(editForm),
       });
       if (!res.ok) throw new Error("Update failed");

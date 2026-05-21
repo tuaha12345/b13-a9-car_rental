@@ -15,6 +15,7 @@ import {
   RiMapPinLine
 } from "react-icons/ri";
 import { useSession } from "@/app/lib/auth-client";
+import { authClient } from "@/app/lib/auth-client";
 
 export default function MyBookingsPage() {
   const { data: session, isPending: sessionLoading } = useSession();
@@ -35,7 +36,12 @@ export default function MyBookingsPage() {
 
     const fetchBookings = async () => {
       try {
-        const res = await fetch(`${API_URL}/bookings/user/${session.user.id}`);
+        const {data:tokenData} = await authClient.token();
+        const res = await fetch(`${API_URL}/bookings/user/${session.user.id}`, {
+          headers: {
+            authorization: `Bearer ${tokenData?.token}`
+          }
+        });
         if (!res.ok) throw new Error("Failed to fetch bookings");
         const data = await res.json();
         setBookings(data);
@@ -53,7 +59,13 @@ export default function MyBookingsPage() {
     if (!confirm("Are you sure you want to cancel this booking?")) return;
     setCancellingId(bookingId);
     try {
-      const res = await fetch(`${API_URL}/bookings/${bookingId}`, { method: "DELETE" });
+      const {data:tokenData} = await authClient.token();
+      const res = await fetch(`${API_URL}/bookings/${bookingId}`, {
+        method: "DELETE",
+        headers: {
+          authorization: `Bearer ${tokenData?.token}`
+        }
+      });
       if (!res.ok) throw new Error("Cancellation failed");
       setBookings(prev => prev.filter(b => b._id !== bookingId));
       alert("Booking cancelled successfully");

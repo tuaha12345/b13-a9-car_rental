@@ -17,6 +17,7 @@ export default function AddCar() {
 
   const { data: session } = authClient.useSession();
   const user = session?.user;
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -59,10 +60,12 @@ export default function AddCar() {
     console.log("Submitting to Server:", carData);
 
     try {
-      const res = await fetch(`http://localhost:9000/cars`, {
+      const {data:tokenData} = await authClient.token();
+      const res = await fetch(`${API_URL}/cars`, {
         method: 'POST',
         headers: {
-          'content-type': 'application/json'
+          'content-type': 'application/json',
+          authorization: `Bearer ${tokenData?.token}`
         },
         body: JSON.stringify(carData)
       });

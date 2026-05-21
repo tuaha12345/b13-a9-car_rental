@@ -40,7 +40,7 @@ const carImages = [
           Get access to a luxury fleet of vehicles wherever you are. Transparent pricing, 24/7 support, and instant booking confirmation.
         </p>
 
-        <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full max-w-md">
+        <div className="mt-10 mb-5 flex flex-col sm:flex-row items-center gap-4 w-full max-w-md">
           <Link
             href="/cars"
             className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-white px-8 py-3.5 rounded-xl font-medium transition-all shadow-lg shadow-[#f97316]/20 group"
