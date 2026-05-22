@@ -16,6 +16,7 @@ import {
 } from "react-icons/ri";
 import { useSession } from "@/app/lib/auth-client";
 import { authClient } from "@/app/lib/auth-client";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function MyBookingsPage() {
   const { data: session, isPending: sessionLoading } = useSession();
@@ -68,9 +69,9 @@ export default function MyBookingsPage() {
       });
       if (!res.ok) throw new Error("Cancellation failed");
       setBookings(prev => prev.filter(b => b._id !== bookingId));
-      alert("Booking cancelled successfully");
+      toast.success("Booking cancelled successfully");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setCancellingId(null);
     }

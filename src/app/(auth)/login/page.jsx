@@ -19,6 +19,7 @@ import { authClient } from "@/app/lib/auth-client";
 import Link from "next/link";
 import { RiMailLine, RiLock2Line } from "react-icons/ri";
 import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -42,7 +43,8 @@ const LoginPage = () => {
     }
 
     if (error) {
-      alert("Invalid email or password. Please try again.");
+      //alert("Invalid email or password. Please try again.");
+      toast.error("Invalid email or password. Please try again.");
     }
   };
 
@@ -54,11 +56,13 @@ const LoginPage = () => {
                 if (error) {
                     console.error(error);
                     // toast.error(error.message)
-                    alert("Google Sign-In failed. Please try again.");
+                    //alert("Google Sign-In failed. Please try again.");
+                    toast.error("Google Sign-In failed. Please try again.");
                 } else {
                     console.log(data);
                     // toast.success("SignIn successful")
-                    alert("Google Sign-In successful! Redirecting...");
+                    //alert("Google Sign-In successful! Redirecting...");
+                    toast.success("Google Sign-In successful! Redirecting...");
                 }
   };
 

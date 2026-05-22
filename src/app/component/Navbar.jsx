@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { authClient } from "@/app/lib/auth-client";
 import Image from "next/image";
 import { RiCarFill, RiMenuLine, RiCloseLine } from "react-icons/ri";
+import { FaAngleDown } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 export default function AppNavbar() {
   const { data: session, isPending } = authClient.useSession();
@@ -26,6 +28,7 @@ export default function AppNavbar() {
     await authClient.signOut();
     setDropdownOpen(false);
     setMobileMenuOpen(false);
+    toast.success("Logged out successfully.");
   };
 
   const navLinks = [
@@ -117,8 +120,9 @@ export default function AppNavbar() {
                     </div>
                   )}
                   <span className="hidden md:block text-sm font-medium text-gray-700 dark:text-white/80 max-w-[100px] truncate">
-                    {user.name}
+                    {user.name} 
                   </span>
+                  <FaAngleDown />
                 </button>
 
                 {dropdownOpen && (
@@ -136,7 +140,10 @@ export default function AppNavbar() {
                     <Link href="/my-added-cars" className="block px-3 py-2 text-sm text-gray-700 dark:text-white/80 hover:bg-gray-100 dark:hover:bg-white/[0.05] rounded-lg" onClick={() => setDropdownOpen(false)}>
                       My Added Cars
                     </Link>
-                    <button className="w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-red-50/10 rounded-lg font-medium" onClick={handleSignOut}>
+                     <Link href="/profile" className="block px-3 py-2 text-sm text-gray-700 dark:text-white/80 hover:bg-gray-100 dark:hover:bg-white/[0.05] rounded-lg" onClick={() => setDropdownOpen(false)}>
+                      My Profile
+                    </Link>
+                    <button className="w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-red-50/10 rounded-lg font-medium cursor-pointer" onClick={handleSignOut}>
                       Logout
                     </button>
                   </div>

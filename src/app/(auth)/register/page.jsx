@@ -16,6 +16,7 @@ import { authClient } from "@/app/lib/auth-client";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { RiUser3Line, RiMailLine, RiImageLine, RiLock2Line } from "react-icons/ri";
+import { ToastContainer, toast } from 'react-toastify';
 
 const SignUpPage = () => {
   const onSubmit = async (e) => {
@@ -32,11 +33,12 @@ const SignUpPage = () => {
     });
 
     if (data) {
-      redirect("/");
+      redirect("/login");
     }
 
     if (error) {
-      alert("Error creating account. Please try again.");
+      // alert("Error creating account. Please try again.");
+      toast.error("Error creating account. Please try again.");
     }
   };
 

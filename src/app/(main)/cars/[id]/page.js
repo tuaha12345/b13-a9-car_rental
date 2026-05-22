@@ -13,6 +13,8 @@ import {
   RiCloseLine
 } from "react-icons/ri";
 import { useSession } from "@/app/lib/auth-client";
+import { authClient } from "@/app/lib/auth-client";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function CarDetailsPage() {
   const { id } = useParams();
@@ -78,7 +80,8 @@ export default function CarDetailsPage() {
 
   const handleBookingConfirm = async () => {
     if (!session?.user) {
-      alert("Please login to book a car");
+      // alert("Please login to book a car");
+        toast.error("Please login to book a car");
       router.push("/login");
       return;
     }
@@ -112,22 +115,22 @@ export default function CarDetailsPage() {
 
       const result = await response.json();
       if (response.ok) {
-        alert("Booking successful!");
+        toast.success("Booking successful!");
         router.push("/my-bookings");
       } else {
-        alert(result.message || "Booking failed");
+        toast.error(result.message || "Booking failed");
         setBookingStatus("");
       }
     } catch (err) {
       console.error(err);
-      alert("Something went wrong");
+      toast.error("Something went wrong");
       setBookingStatus("");
     }
   };
 
   const openModal = () => {
     if (!session?.user) {
-      alert("Please login to book a car");
+      toast.error("Please login to book a car");
       router.push("/login");
       return;
     }

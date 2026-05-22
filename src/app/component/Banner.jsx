@@ -42,7 +42,7 @@ const carImages = [
 
         <div className="mt-10 mb-5 flex flex-col sm:flex-row items-center gap-4 w-full max-w-md">
           <Link
-            href="/cars"
+            href="/explore_cars"
             className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#f97316] hover:bg-[#ea580c] text-white px-8 py-3.5 rounded-xl font-medium transition-all shadow-lg shadow-[#f97316]/20 group"
           >
             Explore Cars
@@ -50,11 +50,11 @@ const carImages = [
           </Link>
           
           <Link
-            href="/cars"
+            href="/add-car"
             className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white dark:bg-white/[0.05] hover:bg-gray-100 dark:hover:bg-white/[0.1] text-gray-900 dark:text-white border border-gray-200 dark:border-white/[0.08] px-8 py-3.5 rounded-xl font-medium transition-colors"
           >
             <RiSearchLine className="text-lg text-gray-500 dark:text-white/60" />
-            Find Rental
+            Add Your Car
           </Link>
         </div>
       </div>

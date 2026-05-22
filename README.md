@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# B13 A9 Car Rental
 
-## Getting Started
+A modern car rental website built with Next.js, React, Tailwind CSS, and MongoDB. This project provides a client-side car rental experience with authentication, car management, booking views, and an attractive responsive interface.
 
-First, run the development server:
+## Live Site URL (Client Side)
+
+https://b13-a9-car-rental.vercel.app
+
+
+## Features
+
+- User registration and authentication with Better Auth and Google sign-in
+- Add new cars and manage listings from the dashboard
+- Browse available cars and explore car details
+- View personal booking history and manage car reservations, view user profile
+- Responsive UI using Hero UI components and Tailwind CSS
+- Real-time feedback with `react-toastify` notifications
+
+## Technologies Used
+
+- Next.js 16.2.6
+- React 19.2.4
+- Tailwind CSS v4
+- MongoDB
+- Better Auth for authentication
+- React Icons for iconography
+- React Toastify for toast notifications
+- @heroui/react and @heroui/styles for UI components
+
+## Installation
+
+1. Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd b13-a9-car_rental
+```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Create environment variables
+
+```bash
+copy example.env .env
+```
+
+4. Update `.env` with your own values:
+
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_URL`
+- `MONGODB_URI`
+- `GOOGLE_CLIENTID`
+- `GOOGLE_SECRET`
+- `NEXT_PUBLIC_SERVER_URL`
+
+5. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+6. Open the app in your browser
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Available Scripts
 
-## Learn More
+- `npm run dev` - Run the app in development mode
+- `npm run build` - Build the application for production
+- `npm run start` - Start the production server
+- `npm run lint` - Run ESLint checks
 
-To learn more about Next.js, take a look at the following resources:
+## Notes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Make sure MongoDB is accessible from `MONGODB_URI`
+- Ensure Google OAuth credentials are configured if you use Google sign-in
+- If you host the frontend and backend separately, update `NEXT_PUBLIC_SERVER_URL` accordingly

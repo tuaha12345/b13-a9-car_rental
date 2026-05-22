@@ -12,6 +12,7 @@ import {
   RiCheckboxCircleLine
 } from "react-icons/ri";
 import { authClient } from "@/app/lib/auth-client";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function AddCar() {
 
@@ -73,7 +74,7 @@ export default function AddCar() {
       if (res.ok) {
         const result = await res.json();
         console.log("Server Response:", result);
-        alert("Car added successfully!");
+        toast.success("Car added successfully!");
 
         setFormData({
           name: "",
@@ -86,11 +87,11 @@ export default function AddCar() {
           availability: true,
         });
       } else {
-        alert("Failed to add car. Server error.");
+        toast.error("Failed to add car. Server error.");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Something went wrong!");
+      toast.error("Something went wrong!");
     }
   };
 

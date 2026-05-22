@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { ToastContainer, toast } from 'react-toastify';
 
 import { 
   RiCarLine, 
@@ -72,9 +73,9 @@ export default function MyAddedCarsPage() {
       });
       if (!res.ok) throw new Error("Delete failed");
       setCars(prev => prev.filter(c => c._id !== carId));
-      alert("Car deleted successfully");
+      toast.success("Car deleted successfully");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setDeletingId(null);
     }
@@ -115,7 +116,7 @@ export default function MyAddedCarsPage() {
       if (!res.ok) throw new Error("Update failed");
       await fetchUserCars();
       setEditingCar(null);
-      alert("Car updated successfully");
+      toast.success("Car updated successfully");
     } catch (err) {
       alert(err.message);
     } finally {
