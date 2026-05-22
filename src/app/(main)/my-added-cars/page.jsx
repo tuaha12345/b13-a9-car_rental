@@ -31,7 +31,7 @@ export default function MyAddedCarsPage() {
   const [updating, setUpdating] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
+  const API_URL = process.env.NEXT_PUBLIC_SERVER_API_URL;
 
   useEffect(() => {
     if (sessionLoading) return;

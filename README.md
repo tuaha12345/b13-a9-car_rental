@@ -6,7 +6,6 @@ A modern car rental website built with Next.js, React, Tailwind CSS, and MongoDB
 
 https://b13-a9-car-rental.vercel.app
 
-
 ## Features
 
 - User registration and authentication with Better Auth and Google sign-in

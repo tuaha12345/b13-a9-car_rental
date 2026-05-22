@@ -14,7 +14,7 @@ export default function ExploreCarsPage() {
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState("");
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
+  const API_URL = process.env.NEXT_PUBLIC_SERVER_API_URL;
 
   useEffect(() => {
     fetchAllCars();

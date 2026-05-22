@@ -15,7 +15,7 @@ export default async function Home() {
   //  console.log(token);
 
   // let data = await fetch('http://localhost:9000/cars',{headers:{authorization:`Bearer ${token}`}});
-   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
+   const API_URL = process.env.NEXT_PUBLIC_SERVER_API_URL;
   let data = await fetch(`${API_URL}/cars`);
   let cars = await data.json();
 

@@ -26,7 +26,7 @@ export default function MyBookingsPage() {
   const [error, setError] = useState("");
   const [cancellingId, setCancellingId] = useState(null);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
+  const API_URL = process.env.NEXT_PUBLIC_SERVER_API_URL;
 
   useEffect(() => {
     if (sessionLoading) return;

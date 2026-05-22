@@ -31,7 +31,7 @@ export default function CarDetailsPage() {
   const [driverNeeded, setDriverNeeded] = useState("No");
   const [specialNote, setSpecialNote] = useState("");
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
+  const API_URL = process.env.NEXT_PUBLIC_SERVER_API_URL;
 
   useEffect(() => {
     if (!id) return;

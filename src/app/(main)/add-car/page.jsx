@@ -18,7 +18,7 @@ export default function AddCar() {
 
   const { data: session } = authClient.useSession();
   const user = session?.user;
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000";
+  const API_URL = process.env.NEXT_PUBLIC_SERVER_API_URL;
 
   const [formData, setFormData] = useState({
     name: "",
